@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: adminpw123  # New password
+      POSTGRES_DB: blog_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d blog_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  postgrest:
+    image: postgrest/postgrest:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      PGRST_DB_URI: "postgres://postgres:adminpw123@postgres:5432/blog_db"  # Updated with new password
+      PGRST_DB_SCHEMA: "api"
+      PGRST_DB_ANON_ROLE: "web_anon"
+      PGRST_DB_MAX_RETRIES: "10"
+      PGRST_DB_RETRY_INTERVAL: "2"
+    restart: on-failure
+volumes:
+  postgres-data:
