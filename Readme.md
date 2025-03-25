@@ -16,8 +16,8 @@ sudo apt install docker docker-compose
 
 ### **2️⃣ Clone the Repository**
 ```sh
-git clone https://github.com/your-repo/postgrest-api.git
-cd postgrest-api
+git clone https://github.com/jiporCK/api-postgrest
+cd api-postgrest
 ```
 
 ### **3️⃣ Start the API**
